@@ -129,7 +129,10 @@ function escapeHTML(value) {
 
 async function loadBooks(query = 'fiction') {
   bookList.innerHTML = `
-    <p class="text-gray-500">Loading books...</p>
+   <div class="col-span-full flex flex-col items-center justify-center py-12">
+  <div class="h-10 w-10 animate-spin rounded-full border-4 border-blue-200 border-t-blue-900"></div>
+  <p class="mt-4 text-gray-500">Loading books...</p>
+</div>
   `
 
   try {
