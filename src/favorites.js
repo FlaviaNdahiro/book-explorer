@@ -3,22 +3,17 @@ const STORAGE_KEY = 'book-explorer-favorites'
 
 export function getFavorites() {
   try {
-    const savedFavorites = localStorage.getItem(STORAGE_KEY)
+    const saved = localStorage.getItem(STORAGE_KEY)
 
-    if (!savedFavorites) {
-      return []
-    }
+    if (!saved) return []
 
-    const favorites = JSON.parse(savedFavorites)
+    const favorites = JSON.parse(saved)
 
-    if (!Array.isArray(favorites)) {
-      localStorage.removeItem(STORAGE_KEY)
-      return []
-    }
+    if (!Array.isArray(favorites)) return []
 
     return favorites
   } catch (error) {
-    console.error('Could not load saved favorites:', error)
+    console.error('Error reading favorites:', error)
     return []
   }
 }
@@ -26,11 +21,7 @@ export function getFavorites() {
 export function addFavorite(book) {
   const favorites = getFavorites()
 
-  const alreadySaved = favorites.some(
-    (favorite) => favorite.id === book.id
-  )
-
-  if (alreadySaved) {
+  if (favorites.some((item) => item.id === book.id)) {
     return favorites
   }
 
@@ -45,9 +36,7 @@ export function addFavorite(book) {
 }
 
 export function removeFavorite(bookId) {
-  const favorites = getFavorites()
-
-  const updatedFavorites = favorites.filter(
+  const updatedFavorites = getFavorites().filter(
     (book) => book.id !== bookId
   )
 
