@@ -74,3 +74,22 @@ Book Explorer uses the [Open Library Search API](https://openlibrary.org/develop
 Flavia Ndahiro
 
 GitHub: [FlaviaNdahiro](https://github.com/FlaviaNdahiro)
+
+
+## Production Build
+
+To create an optimized production version of Book Explorer, run:
+
+```bash
+npm run build
+```
+
+The generated website files will be saved in the `dist` folder.
+
+To preview the production build locally, run:
+
+```bash
+npm run preview
+```
+
+Then open the local URL shown in your terminal.
