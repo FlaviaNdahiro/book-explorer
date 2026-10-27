@@ -86,7 +86,7 @@ function displayBooks(books) {
         book.coverId
           ? `<img
               src="https://covers.openlibrary.org/b/id/${book.coverId}-M.jpg"
-              alt="Book cover"
+              alt="Cover of ${escapeHTML(book.title)}"
               class="h-64 w-full object-cover"
             >`
           : `<div class="flex h-64 items-center justify-center bg-blue-100 text-blue-900">
