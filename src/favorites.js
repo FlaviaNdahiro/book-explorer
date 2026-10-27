@@ -2,9 +2,25 @@
 const STORAGE_KEY = 'book-explorer-favorites'
 
 export function getFavorites() {
-  const savedFavorites = localStorage.getItem(STORAGE_KEY)
+  try {
+    const savedFavorites = localStorage.getItem(STORAGE_KEY)
 
-  return savedFavorites ? JSON.parse(savedFavorites) : []
+    if (!savedFavorites) {
+      return []
+    }
+
+    const favorites = JSON.parse(savedFavorites)
+
+    if (!Array.isArray(favorites)) {
+      localStorage.removeItem(STORAGE_KEY)
+      return []
+    }
+
+    return favorites
+  } catch (error) {
+    console.error('Could not load saved favorites:', error)
+    return []
+  }
 }
 
 export function addFavorite(book) {
