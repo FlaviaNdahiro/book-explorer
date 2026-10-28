@@ -23,9 +23,6 @@ Book Explorer is a responsive web application that helps readers discover books,
 - Browser localStorage
 - Git and GitHub
 
-## API
-
-Book Explorer uses the [Open Library Search API](https://openlibrary.org/developers/api) to retrieve book information and the Open Library Covers service to display available book covers.
 
 ## Getting Started
 
