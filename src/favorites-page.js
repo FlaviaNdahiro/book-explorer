@@ -42,9 +42,15 @@ function displayFavorites() {
       <!-- Main content -->
       <main class="mx-auto w-full max-w-6xl flex-1 px-6 py-16">
 
-        <h1 class="text-3xl font-bold text-gray-900">
-          My Favorite Books
-        </h1>
+       <div class="flex flex-wrap items-center justify-between gap-4">
+  <h1 class="text-3xl font-bold text-gray-900">
+    My Favorite Books
+  </h1>
+
+  <span class="rounded-full bg-blue-100 px-4 py-2 text-sm font-semibold text-blue-900">
+    ${favorites.length} ${favorites.length === 1 ? 'book' : 'books'} saved
+  </span>
+</div>
 
         <p class="mt-2 mb-8 text-gray-600">
           Your saved books are collected here.
