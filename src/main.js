@@ -36,6 +36,7 @@ app.innerHTML = `
             id="search-input"
             type="search"
             placeholder="Search books by title..."
+            aria-label="Search books by title"
             class="min-w-0 flex-1 rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
           />
 
@@ -50,11 +51,16 @@ app.innerHTML = `
 
       <section class="mt-12">
         <h2 class="text-2xl font-bold">Explore Books</h2>
+
         <p class="mt-2 text-gray-600">
           Your next great read is waiting for you.
         </p>
 
-        <div id="book-list" class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div
+          id="book-list"
+          class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
+          aria-live="polite"
+        >
           <p class="text-gray-500">Loading books...</p>
         </div>
       </section>
@@ -72,10 +78,22 @@ const searchInput = document.querySelector('#search-input')
 
 let currentBooks = []
 
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, (character) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[character])
+}
+
 function displayBooks(books) {
   if (books.length === 0) {
     bookList.innerHTML = `
-      <p class="text-gray-500">No books found. Try another title.</p>
+      <p class="col-span-full text-gray-500">
+        No books found. Try another title.
+      </p>
     `
     return
   }
@@ -117,36 +135,55 @@ function displayBooks(books) {
   `).join('')
 }
 
-function escapeHTML(value) {
-  return String(value).replace(/[&<>"']/g, (character) => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;'
-  })[character])
+function showLoading() {
+  bookList.innerHTML = `
+    <div class="col-span-full flex flex-col items-center justify-center py-12">
+      <div
+        class="h-10 w-10 animate-spin rounded-full border-4 border-blue-200 border-t-blue-900"
+        role="status"
+        aria-label="Loading"
+      ></div>
+      <p class="mt-4 text-gray-500">Loading books...</p>
+    </div>
+  `
 }
 
 async function loadBooks(query = 'fiction') {
-  bookList.innerHTML = `
-   <div class="col-span-full flex flex-col items-center justify-center py-12">
-  <div class="h-10 w-10 animate-spin rounded-full border-4 border-blue-200 border-t-blue-900"></div>
-  <p class="mt-4 text-gray-500">Loading books...</p>
-</div>
-  `
+  showLoading()
 
   try {
     const books = await fetchBooks(query)
+
     currentBooks = books
     displayBooks(books)
   } catch (error) {
-    console.error(error)
+    console.error('Failed to load books:', error)
+
+    currentBooks = []
 
     bookList.innerHTML = `
-      <p class="text-red-600">
-        Sorry, we couldn't load books. Check your internet connection and try again.
-      </p>
+      <div class="col-span-full rounded-xl border border-red-200 bg-red-50 p-6 text-center">
+        <h3 class="text-lg font-bold text-red-700">
+          Unable to load books
+        </h3>
+
+        <p class="mt-2 text-red-600" role="alert">
+          We couldn't load books right now. Please check your internet connection and try again.
+        </p>
+
+        <button
+          id="retry-search"
+          type="button"
+          class="mt-4 rounded-lg bg-blue-900 px-5 py-2 font-semibold text-white hover:bg-blue-800"
+        >
+          Try Again
+        </button>
+      </div>
     `
+
+    document.querySelector('#retry-search').addEventListener('click', () => {
+      loadBooks(searchInput.value.trim() || query || 'fiction')
+    })
   }
 }
 
@@ -171,7 +208,6 @@ bookList.addEventListener('click', (event) => {
   }
 
   const bookId = button.dataset.favoriteId
-
   const book = currentBooks.find((item) => item.id === bookId)
 
   if (!book) {
